@@ -1,0 +1,27 @@
+---
+roles:
+  default:
+    commands:
+    - about
+    - availableregions
+    - choose
+    - help
+    - ping
+    - random
+    - sayhello
+    - time
+  Member:
+    inherit: default
+    commands:
+    - 
+  Administrator:
+    inherit: Member
+    commands:
+    - all
+  Owner:
+    inherit: Administrator
+    commands:
+    - all
+  setregion:
+    commands:
+    - default

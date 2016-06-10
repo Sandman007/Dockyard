@@ -1,0 +1,33 @@
+---
+token:
+application_id:
+choice_prefixes:
+- 'I''m going to go with '
+- 'Most certainly '
+- 'How about '
+- 'I guess I''ll go with '
+- 'With out a doubt '
+regions:
+- Australia
+- Canada
+- China
+- Egypt
+- England
+- France
+- Germany
+- Ireland
+- Italy
+- Japan
+- New Zealand
+- Northern Ireland
+- Norway
+- Russia
+- Scotland
+- Spain
+- Sweden
+- United States
+- Wales
+- Poland
+- South Africa
+- Greece
+- South Korea
