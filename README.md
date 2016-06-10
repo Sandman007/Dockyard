@@ -10,19 +10,19 @@ A simply ruby based ruby bot
 
 ### Linux
 Install the latest Ruby and Ruby dev packages from your distros repos.
-Next run
+Next run: 
     gem install discordrb
     
 ### Windows
 
 Go to http://rubyinstaller.org/downloads/
 Install the latest Ruby version, and its associated dev packages.
-then run
+then run: 
     gem install discordrb
     
 ## Running
 
-run
+run: 
     Ruby FritzBot.rb
 Remeber to set the token and applicationid in config.yaml
 
