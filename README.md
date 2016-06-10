@@ -26,3 +26,4 @@ run
     Ruby FritzBot.rb
 Remeber to set the token and applicationid in config.yaml
 
+ 
