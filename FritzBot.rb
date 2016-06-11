@@ -1,11 +1,11 @@
 #!/usr/bin/ruby
 
 require 'discordrb'
-require_relative 'MonkeyPatches.rb'
-require_relative 'Config.rb'
-require_relative 'Commands.rb'
-require_relative 'FritzServer.rb'
-require_relative 'Events.rb'
+require_relative 'lib/MonkeyPatches.rb'
+require_relative 'lib/Config.rb'
+require_relative 'lib/Commands.rb'
+require_relative 'lib/FritzServer.rb'
+require_relative 'lib/Events.rb'
 
 # Set bot configuration
 $config = Config.new
