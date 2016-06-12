@@ -4,7 +4,7 @@ require 'yaml'
 require 'yaml/store'
 
 class Config
-    def initialize(file = "../config.yaml")
+    def initialize(file = "config.yaml")
         @file = file
         @yamlconfig = YAML.load_file(file)
     end
@@ -41,7 +41,7 @@ end
 
 
 class Permissions
-    def initialize(file = "../permissions.yaml")
+    def initialize(file = "permissions.yaml")
         @file = file
         @yamlconfig = YAML.load_file(file)
     end
