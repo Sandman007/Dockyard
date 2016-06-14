@@ -214,8 +214,8 @@ class Commands
                 next unless check_perms?('calc', event)
                 begin
                     equation = args.join(" ")
-                    response = Dentaku(equation)
-                    event.respond("```\n" + response.to_s + "\n```")
+                    response = ( "%.15f" % Dentaku(equation) ).sub(/0*$/,"")
+                    event.respond("```\n #{response} \n```")
                 rescue => error
                     event.respond("**INTERNAL ERROR:** #{error.message}")
                 end
