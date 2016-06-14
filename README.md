@@ -14,7 +14,7 @@ Install the latest Ruby and Ruby dev packages from your distros repos.
 Next run: 
 
     gem install discordrb
-    gem install Dentaku
+    gem install dentaku
     
 then download/clone this repo, and run
 
@@ -26,7 +26,7 @@ Install the latest Ruby version, and its associated dev packages.
 then run: 
 
     gem install discordrb
-    gem install Dentaku
+    gem install dentaku
     
 then download/clone this repo, and run
     
