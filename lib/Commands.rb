@@ -4,6 +4,7 @@ require 'discordrb'
 require_relative 'MonkeyPatches.rb'
 require_relative 'FritzServer.rb'
 require_relative 'Config.rb'
+require_relative '../dentaku/dentaku.rb'
 
 class Commands
     class << self
@@ -204,6 +205,20 @@ class Commands
                 next unless check_perms?('time', event)
                 
                 event.respond("Good heavens, it's high noon!")
+            end
+            
+            $bot.command(:calc,
+                         description: "Evaluates a mathematical formula.",
+                         usage: "<some math here>") do |event, *args|
+                
+                next unless check_perms?('calc', event)
+                begin
+                    equation = args.join(" ")
+                    response = Dentaku(equation)
+                    event.respond("```\n" + response.to_s + "\n```")
+                rescue => error
+                    event.respond("**INTERNAL ERROR:** #{error.message}")
+                end
             end
             
             $bot.command(:help,
