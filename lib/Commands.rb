@@ -1,10 +1,10 @@
 #!/usr/bin/ruby
 
 require 'discordrb'
+require 'dentaku'
 require_relative 'MonkeyPatches.rb'
 require_relative 'FritzServer.rb'
 require_relative 'Config.rb'
-require_relative '../dentaku/dentaku.rb'
 
 class Commands
     class << self
