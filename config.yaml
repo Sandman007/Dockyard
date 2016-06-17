@@ -1,6 +1,8 @@
 ---
 token:
 application_id:
+google_api_key:
+radio_channel:
 choice_prefixes:
 - 'I''m going to go with '
 - 'Most certainly '
