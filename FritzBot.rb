@@ -24,7 +24,7 @@ $bot = Discordrb::Commands::CommandBot.new token: $config['token'], \
 VideoInfo.provider_api_keys = { youtube: $config['youtube_api_key'] }
 
 puts "This bot's invite URL is #{$bot.invite_url}."
-Commands.register_commands
+register_commands
 
 $bot.run_async
 
