@@ -10,7 +10,7 @@ require_relative 'lib/Events.rb'
 
 # Set bot configuration
 $config = Config.new
-$permissions = Permissions.new
+# $permissions = Permissions.new
 $version = "alpha v1.1"
 $running = true
 

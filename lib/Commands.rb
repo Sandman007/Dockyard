@@ -10,7 +10,7 @@ require_relative 'RadioBot.rb'
 
 
 def can_use?(command, event)
-    unless $permissions.can_use_command?(command, event.author) then
+    unless Permissions.can_use_command?(command, event.author, event.server.id) then
         event.respond("You do not have access to that command!")
         return false
     else
@@ -58,50 +58,50 @@ def register_commands
         nil
     end
 
-    $bot.command(:setregion,
-                min_args: 1,
-                description: "Sets your region, case insensitive.",
-                usage: "<Australia/Canada/China/England/Germany/United States/...>") do |event, *args|
-
-        next unless can_use?('setregion', event)
-        selectedregion = args.join(" ").downcase
-        fritz = FritzServer.get(event.author.server)
-        if fritz[selectedregion] == nil then
-            event.respond("That region doesn't exist! (on the server)")
-            next
-        end
-        if event.author.role?(fritz[selectedregion]) == true then
-            event.respond("You already have that region assigned.")
-            next
-        end
-
-        $config['regions'].each do |role| # Remove users current region
-            roleobject = fritz[role.downcase]
-            if roleobject == nil then
-                event.respond("Internal error: " + __FILE__ + "@" + __LINE__)
-                puts "There is a role in 'regions' that doesn't exist on the server!"
-                next
-            elsif event.author.role?(roleobject) then
-                event.author.remove_role(roleobject)
-            end
-        end
-        event.author.add_role(fritz[selectedregion])
-        event.respond("#{event.author.name}'s region has been set to #{selectedregion.capitalize}")
-        nil
-    end
-
-    $bot.command(:availableregions,
-                description: "Lists available regions.",
-                usage: "") do |event|
-
-        next unless can_use?('availableregions', event)
-        output = ""
-        $config['regions'].each do |role|
-            output += role
-            output += "\n"
-        end
-        event.respond(output)
-    end
+    # $bot.command(:setregion,
+    #             min_args: 1,
+    #             description: "Sets your region, case insensitive.",
+    #             usage: "<Australia/Canada/China/England/Germany/United States/...>") do |event, *args|
+    #
+    #     next unless can_use?('setregion', event)
+    #     selectedregion = args.join(" ").downcase
+    #     fritz = FritzServer.get(event.author.server)
+    #     if fritz[selectedregion] == nil then
+    #         event.respond("That region doesn't exist! (on the server)")
+    #         next
+    #     end
+    #     if event.author.role?(fritz[selectedregion]) == true then
+    #         event.respond("You already have that region assigned.")
+    #         next
+    #     end
+    #
+    #     $config['regions'].each do |role| # Remove users current region
+    #         roleobject = fritz[role.downcase]
+    #         if roleobject == nil then
+    #             event.respond("Internal error: " + __FILE__ + "@" + __LINE__)
+    #             puts "There is a role in 'regions' that doesn't exist on the server!"
+    #             next
+    #         elsif event.author.role?(roleobject) then
+    #             event.author.remove_role(roleobject)
+    #         end
+    #     end
+    #     event.author.add_role(fritz[selectedregion])
+    #     event.respond("#{event.author.name}'s region has been set to #{selectedregion.capitalize}")
+    #     nil
+    # end
+    #
+    # $bot.command(:availableregions,
+    #             description: "Lists available regions.",
+    #             usage: "") do |event|
+    #
+    #     next unless can_use?('availableregions', event)
+    #     output = ""
+    #     $config['regions'].each do |role|
+    #         output += role
+    #         output += "\n"
+    #     end
+    #     event.respond(output)
+    # end
 
     $bot.command(:exit,
                 description: "Shuts the bot down.",
@@ -141,7 +141,7 @@ def register_commands
         next unless can_use?('reload', event)
         event.respond("Reloading, please standby.")
         $config = Config.new
-        $permissions = Permissions.new
+        Permissions.reload
         FritzServer.remove(event.user.server)
         fserv = FritzServer.new(event.user.server)
         FritzServer.add(event.user.server, fserv)
@@ -154,51 +154,30 @@ def register_commands
 
         next unless can_use?('saveconfig', event)
         $config.save
-        $permissions.save
+        Permissions.save
         event.respond("Done!")
     end
 
-    $bot.command(:givecommand,
-                min_args: 2,
-                max_args: 2,
-                description: "Gives access to specifed command to specifed role, case sensitive!",
-                usage: "<command> <role>") do |event, command, role|
 
-        next unless can_use?('givecommand', event)
-        $permissions.bot.command_to_role(command, role)
-        event.respond("Added!")
-    end
-
-    $bot.command(:removecommand,
-                min_args: 2,
-                max_args: 2,
-                description: "Removes access to specified command from specified role, case sensitive!",
-                usage: "<command> <role>") do |event, command, role|
-
-        next unless can_use?('removecommand', event)
-        $permissions.remove_command_from_role(command, role)
-        event.respond("Removed!")
-    end
-
-    $bot.command(:addregion,
-                min_args: 1,
-                description: "Adds a region to the configuration, case sensetive",
-                usage: "<region>") do |event, *arg|
-
-        next unless can_use?('addregion', event)
-        $config.add_region(arg.join(" "))
-        event.respond("Added!")
-    end
-
-    $bot.command(:delregion,
-                min_args: 1,
-                description: "Removes a region to the configuration, case sensetive.",
-                usage: "<region>") do |event, *arg|
-
-        next unless can_use?('delregion', event)
-        $config.delete_region(arg.join(" "))
-        event.respond("Removed!")
-    end
+    # $bot.command(:addregion,
+    #             min_args: 1,
+    #             description: "Adds a region to the configuration, case sensetive",
+    #             usage: "<region>") do |event, *arg|
+    #
+    #     next unless can_use?('addregion', event)
+    #     $config.add_region(arg.join(" "))
+    #     event.respond("Added!")
+    # end
+    #
+    # $bot.command(:delregion,
+    #             min_args: 1,
+    #             description: "Removes a region to the configuration, case sensetive.",
+    #             usage: "<region>") do |event, *arg|
+    #
+    #     next unless can_use?('delregion', event)
+    #     $config.delete_region(arg.join(" "))
+    #     event.respond("Removed!")
+    # end
 
     $bot.command(:time,
                 description: "Displays the current time.",
@@ -224,7 +203,7 @@ def register_commands
                 event.respond("```\n81.\n```")
                 next
             end
-            result =  Dentaku(equation, pi: 3.14159265359)
+            result = Dentaku(equation, pi: 3.14159265359)
             if [true, false].include? result then
                 event.respond("```\n#{result}```\n")
             else
@@ -338,19 +317,11 @@ def register_commands
         nil
     end
 
-    $bot.command(:debug_listchannels,
-                 description: "Lists all channels in the current server.",
+    $bot.command(:setup,
+                 description: "Begins interactive setup of the bot.",
                  usage: "") do |event|
-
-        next unless can_use?('debug', event)
-        output = ""
-        event.author.server.channels.each do |channel|
-            output += channel.name + "\n"
-        end
-
-        event.respond(output)
+        event.respond("This command is still under development. Sorry.")
     end
-
 
     $bot.command(:help,
                 max_args: 1,
