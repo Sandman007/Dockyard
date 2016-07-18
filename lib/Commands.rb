@@ -9,7 +9,7 @@ require_relative 'Config.rb'
 require_relative 'RadioBot.rb'
 
 
-def check_perms?(command, event)
+def can_use?(command, event)
     unless $permissions.can_use_command?(command, event.author) then
         event.respond("You do not have access to that command!")
         return false
@@ -22,7 +22,7 @@ def register_commands
     $bot.command(:ping,
                 description: 'Pong!',
                 usage: "") do |event|
-        next unless check_perms?('ping', event)
+        next unless can_use?('ping', event)
         event.respond('Pong!')
         nil
     end
@@ -33,7 +33,7 @@ def register_commands
                 description: 'Generates a random number between 0 and 1, 0 and max or min and max.',
                 usage: '(min) <max>') do |_event, min, max|
 
-        next unless check_perms?('random', event)
+        next unless can_use?('random', event)
         if max
           rand(min.to_i..max.to_i)
         elsif min
@@ -48,7 +48,7 @@ def register_commands
                 description: 'Based on math, selects a choice fairly.',
                 usage: '<firstChoice>, <secondChoice>, (thirdChoice), (fourthChoice), ...') do |event, *args|
 
-        next unless check_perms?('choose', event)
+        next unless can_use?('choose', event)
         choices = args.join(" ").split(',')
         output = $config['choice_prefixes'].sample
         output += choices.sample
@@ -63,7 +63,7 @@ def register_commands
                 description: "Sets your region, case insensitive.",
                 usage: "<Australia/Canada/China/England/Germany/United States/...>") do |event, *args|
 
-        next unless check_perms?('setregion', event)
+        next unless can_use?('setregion', event)
         selectedregion = args.join(" ").downcase
         fritz = FritzServer.get(event.author.server)
         if fritz[selectedregion] == nil then
@@ -94,7 +94,7 @@ def register_commands
                 description: "Lists available regions.",
                 usage: "") do |event|
 
-        next unless check_perms?('availableregions', event)
+        next unless can_use?('availableregions', event)
         output = ""
         $config['regions'].each do |role|
             output += role
@@ -107,7 +107,7 @@ def register_commands
                 description: "Shuts the bot down.",
                 usage: "") do |event|
 
-        next unless check_perms?('exit', event)
+        next unless can_use?('exit', event)
         event.respond("Shutting down.")
         $running = false
         # event.author.server.leave
@@ -118,7 +118,7 @@ def register_commands
                 description: "Displays information about the bot.",
                 usage: "") do |event|
 
-        next unless check_perms?('about', event)
+        next unless can_use?('about', event)
         output = "```\n"
         output += "Author\n"
         output += "    Austin Martin (Evalelynn#3885)\n"
@@ -138,7 +138,7 @@ def register_commands
                 description: "Reloads configuration files.",
                 usage: "") do |event|
 
-        next unless check_perms?('reload', event)
+        next unless can_use?('reload', event)
         event.respond("Reloading, please standby.")
         $config = Config.new
         $permissions = Permissions.new
@@ -152,7 +152,7 @@ def register_commands
                 description: "Saves configuration files.",
                 usage: "") do |event|
 
-        next unless check_perms?('saveconfig', event)
+        next unless can_use?('saveconfig', event)
         $config.save
         $permissions.save
         event.respond("Done!")
@@ -164,7 +164,7 @@ def register_commands
                 description: "Gives access to specifed command to specifed role, case sensitive!",
                 usage: "<command> <role>") do |event, command, role|
 
-        next unless check_perms?('givecommand', event)
+        next unless can_use?('givecommand', event)
         $permissions.bot.command_to_role(command, role)
         event.respond("Added!")
     end
@@ -175,7 +175,7 @@ def register_commands
                 description: "Removes access to specified command from specified role, case sensitive!",
                 usage: "<command> <role>") do |event, command, role|
 
-        next unless check_perms?('removecommand', event)
+        next unless can_use?('removecommand', event)
         $permissions.remove_command_from_role(command, role)
         event.respond("Removed!")
     end
@@ -185,7 +185,7 @@ def register_commands
                 description: "Adds a region to the configuration, case sensetive",
                 usage: "<region>") do |event, *arg|
 
-        next unless check_perms?('addregion', event)
+        next unless can_use?('addregion', event)
         $config.add_region(arg.join(" "))
         event.respond("Added!")
     end
@@ -195,7 +195,7 @@ def register_commands
                 description: "Removes a region to the configuration, case sensetive.",
                 usage: "<region>") do |event, *arg|
 
-        next unless check_perms?('delregion', event)
+        next unless can_use?('delregion', event)
         $config.delete_region(arg.join(" "))
         event.respond("Removed!")
     end
@@ -203,7 +203,7 @@ def register_commands
     $bot.command(:time,
                 description: "Displays the current time.",
                 usage: "") do |event|
-        next unless check_perms?('time', event)
+        next unless can_use?('time', event)
 
         event.respond("Good heavens, it's high noon!")
     end
@@ -212,7 +212,7 @@ def register_commands
                  description: "Evaluates a mathematical formula.",
                  usage: "<some math here>") do |event, *args|
 
-        next unless check_perms?('calc', event)
+        next unless can_use?('calc', event)
         begin
             equation = args.join(" ").gsub("`", "")
             if equation == "((12+144+20+3*sqrt(4))/7)+(5*11)=9^2+0" then # This needed to be done
@@ -240,7 +240,7 @@ def register_commands
                  description: "It's a radio, for playing music.",
                  usage: "<add/pause/play/skip/replay/nowplaying/queue/enable/disable> [options]") do |event, cmd, *args|
 
-        next unless check_perms?('radio', event)
+        next unless can_use?('radio', event)
         radio = RadioBot.getbot(event.user.server)
         if cmd == "add" then
             if radio == nil then
@@ -342,7 +342,7 @@ def register_commands
                  description: "Lists all channels in the current server.",
                  usage: "") do |event|
 
-        next unless check_perms?('debug', event)
+        next unless can_use?('debug', event)
         output = ""
         event.author.server.channels.each do |channel|
             output += channel.name + "\n"
@@ -357,7 +357,7 @@ def register_commands
                 description: "Shows a list of all the commands available or displays help for a specific command.",
                 usage: "[command name]") do |event, command_name|
 
-        next unless check_perms?('help', event)
+        next unless can_use?('help', event)
         output = "```\n"
         if command_name then
             command = $bot.commands[command_name.to_sym]
