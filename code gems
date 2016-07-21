@@ -1,0 +1,20 @@
+# Look at this ugly bastard!
+
+def self.role_has_access?(command, role, server_id) # I'm not proud of this, but it works, mostly, sorta.
+unless @@yamlconfig[server_id]['roles'][role] == nil
+    if @@yamlconfig[server_id]['roles'][role]['commands'] != nil
+        if (@@yamlconfig[server_id]['roles'][role]['commands'].include?(command) or @@yamlconfig[server_id]['roles'][role]['commands'].include?('all')) then
+            return true
+        elsif @@yamlconfig[server_id]['roles'][role]['inherit'] != nil then
+            return role_has_access?(command, @@yamlconfig[server_id]['roles'][role]['inherit'])
+        else
+            return false
+        end
+    elsif @@yamlconfig[server_id]['roles'][role]['inherit'] != nil then
+        return role_has_access?(command, @@yamlconfig[server_id]['roles'][role]['inherit'])
+    end
+end
+    return false
+end
+
+# Lol, please don't hate me!

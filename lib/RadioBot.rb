@@ -7,9 +7,12 @@ require 'thread'
 class RadioBot
     @@RadioBots = {}
     def initialize(bot, server)
-        name = $config['radio_channel']
+        chanid = FritzServer.get(server).get_configuration['radio_channel']
+        if chanid == nil then
+            raise "radio_channel is not set!"
+        end
         server.channels.each do |channel|
-            if channel.name == name and channel.type == "voice" then
+            if channel.id == chanid and channel.type == 'voice' then
                 @channel = channel
                 break
             end
@@ -21,7 +24,7 @@ class RadioBot
         @bot = bot;
         @bot.voice_connect(@channel)
         @voice = bot.voice(server)
-        
+
         @queue = Queue.new
         @playing = nil
         @paused = false
@@ -29,7 +32,7 @@ class RadioBot
         @@RadioBots[server] = self
         @songindex = 1
     end
-    
+
     def addsong(url)
         begin
             video = VideoInfo.new(url)
@@ -46,7 +49,7 @@ class RadioBot
                     dlsong(info)
                 end
                 @queue.push(info)
-                
+
                 return "OK"
             else
                 return "ERROR"
@@ -55,7 +58,7 @@ class RadioBot
             return "ERROR"
         end
     end
-    
+
     def addplaylist(url) # DO NOT USE. BROKEN DO TO GOOGLE API BUG.
         begin
             playlistinfo = VideoInfo.new(url)
@@ -82,14 +85,14 @@ class RadioBot
             @voice.continue
         end
     end
-    
+
     def pause
         if @paused == false then
             @paused = true
             @voice.pause
         end
     end
-    
+
     def close
         @running = false
         @queue.clear
@@ -99,7 +102,7 @@ class RadioBot
         @@RadioBots[@server] = nil
         @@RadioBots.delete(@server)
     end
-    
+
     def replay
         currentsong = @playing
         if currentsong == nil then
@@ -109,11 +112,11 @@ class RadioBot
             @queue.push(currentsong)
         end
     end
-    
+
     def currentsong
         return @playing
     end
-    
+
     def skip(num)
         toskip = num
         pause
@@ -130,24 +133,24 @@ class RadioBot
         end
         play
     end
-    
+
     def getqueue
         return @queue
     end
-    
+
     def setqueue(queue)
         @queue = queue
     end
-    
+
     def self.getbot(server)
         return @@RadioBots[server]
     end
-    
-    
-    
-    
+
+
+
+
     # PRIVATE
-    
+
     def dlsong(info)
 
         Dir.foreach('videos') do |item|
@@ -161,7 +164,7 @@ class RadioBot
         system(command)
 
     end
-    
+
     def dlnextsong
         if @queue.empty?
             return
@@ -176,7 +179,7 @@ class RadioBot
             }
         end
     end
-    
+
     def run
         begin
             playlistindex = 1
@@ -193,19 +196,19 @@ class RadioBot
                     playlistindex = 1
                     next
                 end
-                
-                
+
+
                 dlsong(@playing)
                 dlnextsong
-                
+
                 # puts audio_file
-                
+
                 @voice.play_file(File.expand_path("videos/#{audio_file}"))
-                
+
                 playlistindex += 1
-                
+
                 # @playing = nil
-                
+
                 FileUtils.rm(File.expand_path("videos/#{audio_file}"))
                 sleep(0.1)
             end
@@ -214,7 +217,7 @@ class RadioBot
             puts e.backtrace
             puts 'error'
         end
-        
+
         puts "Exiting"
     end
 end

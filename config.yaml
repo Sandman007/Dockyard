@@ -9,27 +9,45 @@ choice_prefixes:
 - 'How about '
 - 'I guess I''ll go with '
 - 'With out a doubt '
-regions:
-- Australia
-- Canada
-- China
-- Egypt
-- England
-- France
-- Germany
-- Ireland
-- Italy
-- Japan
-- New Zealand
-- Northern Ireland
-- Norway
-- Russia
-- Scotland
-- Spain
-- Sweden
-- United States
-- Wales
-- Poland
-- South Africa
-- Greece
-- South Korea
+predefined_roles:
+    member:
+        options:
+            inherit: default
+            power: 1
+        commands:
+        - about
+        - choose
+        - help
+        - ping
+        - random
+        - time
+        - calc
+        - radio
+    moderator:
+        options:
+            inherit: member
+            power: 2
+        commands:
+        - warn
+        - kick
+    admin:
+        options:
+            inherit: moderator
+            power: 3
+        commands:
+        - ban
+        - setrole
+    superadmin:
+        options:
+            inherit: admin
+            power: 9001
+        commands:
+        - "*"
+restricted_permissions:
+- stop
+- restart
+- eval
+- reval
+- leave.others
+user_whitelist:
+- evalelynn#1885
