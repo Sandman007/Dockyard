@@ -7,9 +7,11 @@ require_relative 'Config.rb'
 class FritzServer
     @@servers = {}
     attr_accessor :setup_state
-    def initialize(server)
+    def initialize(server, bot)
         @roles = {}
         @configuration = Permissions.new(server.id, server.name)
+        @server = server
+        @bot = bot
         server.roles.each do |role|
             @roles[role.name.downcase] = role
         end
@@ -45,5 +47,22 @@ class FritzServer
 
     def get_configuration
         return @configuration
+    end
+
+    def find_member(str)
+        if str =~ /<@[0-9]+>/
+            member = @bot.parse_mention(str)
+            
+
+    end
+
+    def find_role(str)
+        if str =~ /<@[0-9]*>/
+            role = @server.role(str.gsub(/[<@>]*/, '').to_i)
+            return role
+        else
+            role = @roles[str.downcase]
+            return role
+        end
     end
 end

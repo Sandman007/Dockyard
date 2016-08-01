@@ -18,3 +18,11 @@ end
 end
 
 # Lol, please don't hate me!
+
+#note
+bot.commands(:ping, &method(:methodname))
+
+/[^<>@]/
+
+to match discordtag
+/\S*#[0-9]{4}/

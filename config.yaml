@@ -9,6 +9,8 @@ choice_prefixes:
 - 'How about '
 - 'I guess I''ll go with '
 - 'With out a doubt '
+- 'F**king hell it''s '
+- 'All signs point to '
 predefined_roles:
     member:
         options:
@@ -23,6 +25,7 @@ predefined_roles:
         - time
         - calc
         - radio
+        - plugin.list
     moderator:
         options:
             inherit: member
@@ -47,7 +50,9 @@ restricted_permissions:
 - stop
 - restart
 - eval
-- reval
-- leave.others
+- reload
+- saveconfig
+- plugin.load
+- plugin.unload
 user_whitelist:
-- evalelynn#1885
+- Evalelynn#3885

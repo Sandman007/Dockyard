@@ -138,6 +138,7 @@ class Permissions
                 return false
             end
         end
+        return true
     end
 
     def self.is_restricted?(permission)
@@ -150,12 +151,8 @@ class Permissions
     end
 
     def self.can_use_restricted?(user)
-        $config['user_whitelist'].each do |username|
-            if "#{user.username}##{user.tag}" == username
-                return true
-            end
-        end
-        return false
+        usertag = "#{user.username}##{user.tag}"
+        return $config['user_whitelist'].include?(usertag)
     end
 
     def role_inherits?(below, above)
