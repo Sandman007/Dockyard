@@ -34,26 +34,29 @@ end
 
 class Permissions
     def initialize(server_id, name, file = "permissions.yaml")
-        unless server_id and name
-            @@file = file
-            @@yamlconfig = YAML.load_file(file)
+        @server_id = server_id
+        if @@yamlconfig[server_id] == nil
+            @@yamlconfig[server_id] = { # Default configuration
+                'server_name' => name,  # Only for manual reading purposes
+                'roles' =>  { 'default' => {
+                'options' => {
+                    'power' => 0
+                },
+                'commands' => [
+                    'about', 'choose', 'help', 'ping', 'random', 'calc'
+                ]}}}
+            @isnew = true
         else
-            @server_id = server_id
-            if @@yamlconfig[server_id] == nil
-                @@yamlconfig[server_id] = { # Default configuration
-                    'server_name' => name,  # Only for manual reading purposes
-                    'roles' => 'default' => {
-                    'options' => {
-                        'power' => 0
-                    },
-                    'commands' => [
-                        'about', 'choose', 'help', 'ping', 'random', 'calc'
-                    ]}}
-                @isnew = true
-            else
-                @isnew = false
-            end
+            @isnew = false
         end
+    end
+
+    def self.load(file = "permissions.yaml")
+      @@file = file
+      @@yamlconfig = YAML.load_file(file)
+	  unless @@yamlconfig
+		  @@yamlconfig = {}
+	  end
     end
 
     def isnew
@@ -217,12 +220,12 @@ class SetupConfiguration
         @userid = user
         @server = server
         @configuration = {}
-        @fritzserver = FritzServer.get(server)
+        @DockServer = DockServer.get(server)
         @begun = false
     end
 
     def user
-        return @user
+        return @userid
     end
 
     def server
@@ -281,10 +284,10 @@ class SetupConfiguration
             return
         end
         if @configuration[:default_channel] then
-            @fritzserver.get_configuration['default_channel'] = @configuration[:default_channel]
+            @DockServer.configuration['default_channel'] = @configuration[:default_channel]
         end
         if @configuration[:radio_channel] then
-            @fritzserver.get_configuration['radio_channel'] = @configuration[:radio_channel]
+            @DockServer.configuration['radio_channel'] = @configuration[:radio_channel]
         end
         if @configuration[:roles] then
             @configuration[:roles].each do |key, value|
@@ -296,11 +299,11 @@ class SetupConfiguration
                     options['inherit'] = inherit
                 end
                 data = {'options' => options, 'commands' => commands}
-                @fritzserver.get_configuration.set_role_data(value, data)
+                @DockServer.configuration.set_role_data(value, data)
             end
         end
         event.respond("Configuration saved. Thanks for using DESU, the leading "\
-                      "industry standard configuration setup system for Fritz "\
+                      "industry standard configuration setup system for Dockyard "\
                       "Servers.")
     end
 
@@ -369,7 +372,7 @@ class SetupConfiguration
             event.respond("Please reply with channel name.")
             return :fail
         else
-            channel = $bot.find_channel(args.join(" "), event.server.name, 'voice')
+            channel = $bot.find_channel(args.join(" "), event.server.name, type: 'voice')
             if channel.empty? then
                 event.respond("No voice channels by the name where found. "\
                               "Did you spell it correctly? Please try again.")
@@ -379,17 +382,17 @@ class SetupConfiguration
                               "Please be more precise with the name.")
                 return :fail
             else
-                @configuration[:radio_channel] = channel.id
+                @configuration[:radio_channel] = channel[0].id
             end
         end
     end
 
     def _roles_setup(event, args)
         if args.empty? then
-            event.respond("Please reply with [server role], [bot role]".)
+            event.respond("Please reply with [server role], [bot role]")
             return :fail
         else
-            serverrole = @fritzserver[args.join(" ").split(", ")[0]]
+            serverrole = @DockServer[args.join(" ").split(", ")[0]]
             botrole    = args.join(" ").split(", ")[1]
             if serverrole == nil then
                 event.respond("Unable to find that server role, please use FULL "\

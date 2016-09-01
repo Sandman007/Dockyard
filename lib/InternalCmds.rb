@@ -4,59 +4,16 @@ require 'discordrb'
 require 'dentaku'
 require 'thread'
 require_relative 'MonkeyPatches.rb'
-require_relative 'FritzServer.rb'
+require_relative 'DockServer.rb'
 require_relative 'Config.rb'
 require_relative 'RadioBot.rb'
 require_relative 'Plugins.rb'
 
-alias can_use? Plugins.can_use?
+def can_use?(name, event)
+    return Plugins.can_use?(name, event)
+end
 
 def register_commands
-
-    # $bot.command(:setregion,
-    #             min_args: 1,
-    #             description: "Sets your region, case insensitive.",
-    #             usage: "<Australia/Canada/China/England/Germany/United States/...>") do |event, *args|
-    #
-    #     next unless can_use?('setregion', event)
-    #     selectedregion = args.join(" ").downcase
-    #     fritz = FritzServer.get(event.author.server)
-    #     if fritz[selectedregion] == nil then
-    #         event.respond("That region doesn't exist! (on the server)")
-    #         next
-    #     end
-    #     if event.author.role?(fritz[selectedregion]) == true then
-    #         event.respond("You already have that region assigned.")
-    #         next
-    #     end
-    #
-    #     $config['regions'].each do |role| # Remove users current region
-    #         roleobject = fritz[role.downcase]
-    #         if roleobject == nil then
-    #             event.respond("Internal error: " + __FILE__ + "@" + __LINE__)
-    #             puts "There is a role in 'regions' that doesn't exist on the server!"
-    #             next
-    #         elsif event.author.role?(roleobject) then
-    #             event.author.remove_role(roleobject)
-    #         end
-    #     end
-    #     event.author.add_role(fritz[selectedregion])
-    #     event.respond("#{event.author.name}'s region has been set to #{selectedregion.capitalize}")
-    #     nil
-    # end
-    #
-    # $bot.command(:availableregions,
-    #             description: "Lists available regions.",
-    #             usage: "") do |event|
-    #
-    #     next unless can_use?('availableregions', event)
-    #     output = ""
-    #     $config['regions'].each do |role|
-    #         output += role
-    #         output += "\n"
-    #     end
-    #     event.respond(output)
-    # end
 
     $bot.command(:reload,
                 description: "Reloads configuration files.",
@@ -66,9 +23,9 @@ def register_commands
         event.respond("Reloading, please standby.")
         $config = Config.new
         Permissions.reload
-        FritzServer.remove(event.user.server)
-        fserv = FritzServer.new(event.user.server)
-        FritzServer.add(event.user.server, fserv)
+        DockServer.remove(event.user.server)
+        fserv = DockServer.new(event.user.server)
+        DockServer.add(event.user.server, fserv)
         event.respond("Done!")
     end
 

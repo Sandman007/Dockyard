@@ -1,8 +1,7 @@
 ---
 token:
-application_id:
-google_api_key:
-radio_channel:
+application_id: 
+google_api_key: 
 choice_prefixes:
 - 'I''m going to go with '
 - 'Most certainly '
@@ -12,40 +11,41 @@ choice_prefixes:
 - 'F**king hell it''s '
 - 'All signs point to '
 predefined_roles:
-    member:
-        options:
-            inherit: default
-            power: 1
-        commands:
-        - about
-        - choose
-        - help
-        - ping
-        - random
-        - time
-        - calc
-        - radio
-        - plugin.list
-    moderator:
-        options:
-            inherit: member
-            power: 2
-        commands:
-        - warn
-        - kick
-    admin:
-        options:
-            inherit: moderator
-            power: 3
-        commands:
-        - ban
-        - setrole
-    superadmin:
-        options:
-            inherit: admin
-            power: 9001
-        commands:
-        - "*"
+  admin:
+    commands:
+    - ban
+    - setrole
+    options:
+      inherit: moderator
+      power: 3
+  member:
+    commands:
+    - about
+    - choose
+    - help
+    - ping
+    - random
+    - time
+    - calc
+    - radio
+    - plugin.list
+    options:
+      inherit: default
+      power: 1
+  moderator:
+    commands:
+    - warn
+    - kick
+    options:
+      inherit: member
+      power: 2
+  superadmin:
+    commands:
+    - "*"
+    options:
+      inherit: admin
+      power: 9001
+radio_channel: 
 restricted_permissions:
 - stop
 - restart

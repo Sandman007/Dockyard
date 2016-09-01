@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 require 'discordrb'
-require_relative 'FritzServer.rb'
+require_relative 'DockServer.rb'
 require_relative 'Config.rb'
 
 module Plugins
@@ -19,12 +19,10 @@ module Plugins
         end
     end
 
-    def self.(bot)
+    def self.load_all_plugins(bot)
         Dir.foreach('plugins') do |item|
             if item.end_with?('.rb') then
-                require_relative(item)
-                item.sub!('.rb', '')
-                eval("")
+                $plugins[item.sub('.rb', '')] = load_plugin(item, bot)
             end
         end
     end
@@ -37,7 +35,8 @@ module Plugins
     end
 
     def self.unload_plugin(plugin, bot)
-        pl = $plugins['']
+
+    end
 
 
 end

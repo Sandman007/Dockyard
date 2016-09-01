@@ -61,15 +61,15 @@ module Plugins
         end
 
         private
-        
+
         def cmd_ping(event)
-            break unless can_use?('ping', event)
+            return unless can_use?('ping', event)
             event.respond('Pong!')
             nil
         end
 
         def cmd_random(event, min, max)
-            break unless can_use?('random', event)
+            return unless can_use?('random', event)
             if max
               rand(min.to_i..max.to_i)
             elsif min
@@ -80,7 +80,7 @@ module Plugins
         end
 
         def cmd_choose(event, *args)
-            break unless can_use?('choose', event)
+            return unless can_use?('choose', event)
             choices = args.join(" ").split(',')
             output = $config['choice_prefixes'].sample
             output += choices.sample
@@ -91,7 +91,7 @@ module Plugins
         end
 
         def cmd_about(event)
-            break unless can_use?('about', event)
+            return unless can_use?('about', event)
             output = "```\n"
             output += "Author\n"
             output += "    Austin Martin (Evalelynn#3885)\n"
@@ -100,20 +100,18 @@ module Plugins
             output += "Version\n"
             output += "    #{$version}\n"
             output += "GitHub Page\n"
-            output += "    https://github.com/Evalelynn/FritzBot\n"
-            output += "Official Server\n"
-            output += "    http://discordapp.com/invite/012epqCAIjp8UGKGJ\n"
+            output += "    https://github.com/Evalelynn/Dockyard\n"
             output += "```"
-            event.respond(output
+            event.respond(output)
         end
 
         def cmd_time(event) # Lame joke, may be removed
-            break unless can_use?('time', event)
+            return unless can_use?('time', event)
             event.respond("Good heavens, it's high noon!")
         end
 
         def cmd_calc(event, *args)
-            break unless can_use?('calc', event)
+            return unless can_use?('calc', event)
             begin
                 equation = args.join(" ").gsub("`", "")
                 # I'm so sorry
@@ -124,7 +122,7 @@ module Plugins
                                   "Plus three times eleven,\n"\
                                   "Equals nine squared and not a bit more.\n```")
                     event.respond("```\n81.\n```")
-                    next
+                    return
                 end
                 result = Dentaku(equation, pi: 3.14159265359)
                 if [true, false].include? result then
@@ -139,12 +137,12 @@ module Plugins
         end
 
         def cmd_exit(event)
-            break unless can_use?('exit', event)
+            return unless can_use?('exit', event)
             exit
         end
 
         def cmd_eval(event, *args)
-            break unless can_use?('eval', event)
+            return unless can_use?('eval', event)
             event.bot.debug(Discordrb::Logger::FORMAT_BOLD + "WARNING USER "\
                             "#{event.user.name} JUST USED EVAL." + Discordrb::Logger::FORMAT_RESET)
             eval(args.join(' '))

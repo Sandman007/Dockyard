@@ -23,7 +23,10 @@ module Plugins
         private
 
         def cmd_pcs(event, subcommand, *args)
-            break unless can_use?('pcs', event)
+            return unless can_use?('pcs', event)
+
+            event.respond("Sorry, this command is not implmented yet.")
+            return
 
             case subcommand
             when 'role'
@@ -81,13 +84,12 @@ module Plugins
             case args[0]
             when 'permissions'
                 event.respond("Role #{role.name}'s permissions:\n"\
-                              + serv.get_configuration\
-                                    ['roles'][role.name]\
-                                    ['commands'].join(', '))
+                              + serv.get_configuration['roles'][role.name]\
+                                                      ['commands'].join(', '))
             when 'options'
                 options = serv.get_configuration['roles'][role.name]['options']\
                               .to_yaml.sub('---', '').lstrip
-                event.respond("Role #{role.name}'s options:\n"
+                event.respond("Role #{role.name}'s options:\n"\
                               "```\n#{options}\n```")
             else
                 event.respond("Usage:\n"\

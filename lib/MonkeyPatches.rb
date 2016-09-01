@@ -35,6 +35,3 @@ module Discordrb::Commands
         end
     end
 end
-  
-
-

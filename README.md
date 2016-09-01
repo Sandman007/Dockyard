@@ -1,4 +1,4 @@
-# FritzBot
+# Dockyard
 
 A simply ruby based ruby bot
 
@@ -57,8 +57,8 @@ then download/clone this repo, and run
 
 run: 
 
-    Ruby FritzBot.rb
-from the directory that you downloaded/clones FritzBot too.
+    Ruby Dockyard.rb
+from the directory that you downloaded/clones Dockyard too.
 Remeber to set the token and applicationid in config.yaml
 
  

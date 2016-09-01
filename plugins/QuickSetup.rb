@@ -20,15 +20,15 @@ module Plugins
 
         private
 
-        def cmd_setup(event, subcommand, *args)
-            setup = FritzServer.get(event.server).setup
+        def cmd_setup(event, subcommand = nil, *args)
+            setup = DockServer.get(event.server).setup_state
             if setup == nil then
-                event.respond("***Welcome to the Digital Express Setup Utility (DESU)***\n"\
+                event.respond("***Welcome to the Dockyard Express Setup Utility (DESU)***\n"\
                               "To begin guided setup, type `!setup begin` to start "\
                               "an interactive setup session. At anytime you may type "\
                               "`!setup cancel` to cancel the setup. Your changes "\
                               "will only be saved once DESU has finished.")
-                FritzServer.get(event.server).setup_state = SetupConfiguration.new(event.user, event.server)
+                DockServer.get(event.server).setup_state = SetupConfiguration.new(event.user, event.server)
             else
                 if setup.user != event.user then
                     event.respond("Sorry, a DESU session is already in progress on this server.")
@@ -44,7 +44,7 @@ module Plugins
                     else
                         if setup.is_done? then
                             event.respond("DESU session canceled.")
-                            FritzServer.get(event.server).setup_state = nil
+                            DockServer.get(event.server).setup_state = nil
                         else
                             setup.skip_step(event)
                         end
@@ -66,16 +66,16 @@ module Plugins
                         event.respond("You have not started a DESU session.")
                     else
                         setup.finish(event)
-                        FritzServer.get(event.server).setup_state = nil
+                        DockServer.get(event.server).setup_state = nil
                     end
                 elsif subcommand == "cancel"
-                    FritzServer.get(event.server).setup_state = nil
+                    DockServer.get(event.server).setup_state = nil
                     event.respond("DESU session cancelled.")
                 elsif subcommand == "help"
                     begin
                         commands = $config['predefined_roles'][args[0]]['commands']
                         if commands == nil
-                            event.respond("Configuration error, #{args[0]} missing "
+                            event.respond("Configuration error, #{args[0]} missing "\
                             "`commands` section.")
                         else
                             event.respond("The #{args[0]} predefined role has "\
@@ -89,7 +89,7 @@ module Plugins
                     event.respond("That subcommand doesn't exist.")
                 end
             end
+						nil
         end
-
     end
 end

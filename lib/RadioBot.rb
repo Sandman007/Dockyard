@@ -7,7 +7,7 @@ require 'thread'
 class RadioBot
     @@RadioBots = {}
     def initialize(bot, server)
-        chanid = FritzServer.get(server).get_configuration['radio_channel']
+        chanid = DockServer.get(server).configuration['radio_channel']
         if chanid == nil then
             raise "radio_channel is not set!"
         end

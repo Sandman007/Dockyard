@@ -4,9 +4,10 @@ require 'discordrb'
 require_relative 'MonkeyPatches.rb'
 require_relative 'Config.rb'
 
-class FritzServer
+class DockServer
     @@servers = {}
     attr_accessor :setup_state
+    attr_accessor :configuration
     def initialize(server, bot)
         @roles = {}
         @configuration = Permissions.new(server.id, server.name)
@@ -18,7 +19,7 @@ class FritzServer
         if @configuration.isnew then
             @configuration['default_channel'] = server.default_channel.id
             server.general_channel.send_message(
-            "Hello! My name is Fritz!\n"\
+            "Hello! My name is Docky!\n"\
             "This server has not been configured yet, or is new to me. "\
             "Someone with the permission `manage_server` (usually the owner) "\
             "please use the `!setup` command to configure me. Thank you :)")
@@ -26,15 +27,15 @@ class FritzServer
     end
 
     def [](key)
-        return @roles[key]
+        return @roles[key.downcase]
     end
 
     def []=(key, value)
-        @roles[key] = value
+        @roles[key.downcase] = value
     end
 
-    def self.add(server, fritzserver)
-        @@servers[server] = fritzserver
+    def self.add(server, dockserver)
+        @@servers[server] = dockserver
     end
 
     def self.remove(server)
@@ -45,14 +46,10 @@ class FritzServer
         return @@servers[server]
     end
 
-    def get_configuration
-        return @configuration
-    end
-
     def find_member(str)
         if str =~ /<@[0-9]+>/
             member = @bot.parse_mention(str)
-            
+        end
 
     end
 

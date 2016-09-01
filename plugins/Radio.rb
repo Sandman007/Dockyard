@@ -23,12 +23,12 @@ module Plugins
         private
 
         def cmd_radio(event, cmd, *args)
-            break unless can_use?('radio', event)
+            return unless can_use?('radio', event)
             radio = RadioBot.getbot(event.user.server)
             if cmd == "add" then
                 if radio == nil then
                     event.respond("Bot is diabled on this server, please enable it first.")
-                    next
+                    return
                 end
                 event.respond("Attempting to download song, please be patient.")
                 resp = radio.addsong(args[0])
@@ -40,28 +40,28 @@ module Plugins
             elsif cmd == "pause"
                 if radio == nil then
                     event.respond("Bot is diabled on this server, please enable it first.")
-                    next
+                    return
                 end
                 radio.pause
                 event.respond("Paused.")
             elsif cmd == "play" then
                 if radio == nil then
                     event.respond("Bot is diabled on this server, please enable it first.")
-                    next
+                    return
                 end
                 radio.play
                 event.respond("Now playing.")
             elsif cmd == "skip"
                 if radio == nil then
                     event.respond("Radio is diabled on this server, please enable it first.")
-                    next
+                    return
                 end
                 radio.skip((args[0].to_i || 1))
                 event.respond("Skipped #{(args[0] || 1)} songs.")
             elsif cmd == "nowplaying" then
                 if radio == nil then
                     event.respond("Radio is diabled on this server, please enable it first.")
-                    next
+                    return
                 end
                 info = radio.currentsong
                 unless info == nil then
@@ -76,14 +76,14 @@ module Plugins
             elsif cmd == "replay" then
                 if radio == nil then
                     event.respond("Radio is diabled on this server, please enable it first.")
-                    next
+                    return
                 end
                 event.respond("Attempting to replay current song.")
                 radio.replay
             elsif cmd == "enable"
                 if radio != nil then
                     event.respond("Radio is already running. Try turning it off before starting it, thank you.")
-                    next
+                    return
                 end
                 radio = RadioBot.new($bot, event.author.server)
                 t = Thread.new { radio.run }
@@ -91,14 +91,14 @@ module Plugins
             elsif cmd == "disable" then
                 if radio == nil
                     event.respond("Bot isn't running. Please try starting before turning it off, thank you.")
-                    next
+                    return
                 end
                 radio.close
                 event.respond("Radio has been disabled.")
             elsif cmd == "queue" then
                 if radio == nil
                     event.respond("Bot isn't running. Please try starting before turning it off, thank you.")
-                    next
+                    return
                 end
                 queue = radio.getqueue
                 secondqueue = Queue.new
