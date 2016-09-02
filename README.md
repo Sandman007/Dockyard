@@ -1,6 +1,6 @@
 # Dockyard
 
-A simply ruby based ruby bot
+A simply ruby based discord bot
 
 ## Dependencies
 * Ruby 2.1
